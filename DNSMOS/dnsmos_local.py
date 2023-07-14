@@ -113,16 +113,16 @@ def main(args):
 
     rows = []
     clips = []
-    clips = glob.glob(os.path.join(args.testset_dir, "*.wav"))
+    clips = glob.glob(os.path.join(args.testset_dir, f"*.{args.format}"))
     is_personalized_eval = args.personalized_MOS
     desired_fs = SAMPLING_RATE
     for m in tqdm(models):
         max_recursion_depth = 10
         audio_path = os.path.join(args.testset_dir, m)
-        audio_clips_list = glob.glob(os.path.join(audio_path, "*.wav"))
+        audio_clips_list = glob.glob(os.path.join(audio_path, f"*.{args.format}"))
         while len(audio_clips_list) == 0 and max_recursion_depth > 0:
             audio_path = os.path.join(audio_path, "**")
-            audio_clips_list = glob.glob(os.path.join(audio_path, "*.wav"))
+            audio_clips_list = glob.glob(os.path.join(audio_path, f"*.{args.format}"))
             max_recursion_depth -= 1
         clips.extend(audio_clips_list)
 
@@ -151,6 +151,7 @@ if __name__=="__main__":
     parser.add_argument('-o', "--csv_path", default=None, help='Dir to the csv that saves the results')
     parser.add_argument('-p', "--personalized_MOS", action='store_true', 
                         help='Flag to indicate if personalized MOS score is needed or regular')
+    parser.add_argument("--format", type=str, default="wav", help="Specify the audio format, i.e. the file suffix." )
     
     args = parser.parse_args()
 
